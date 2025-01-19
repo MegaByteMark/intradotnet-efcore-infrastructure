@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>IntraDotNet.EntityFrameworkCore.Optimizations</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>IntraDotNet.EntityFrameworkCore.Optimizations</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>MegaByteMark</Authors>
+    <Description>Optimization classes to remove boilerplate when generating entityframework dbcontexts</Description>
+    <PackageTags>aspnet-core</PackageTags>
+    <RepositoryUrl>https://github.com/MegaByteMark/intradotnet-entityframeworkcore-optimizations</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/MegaByteMark/intradotnet-entityframeworkcore-optimizations</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\"  />
+  </ItemGroup>
+
+</Project>
