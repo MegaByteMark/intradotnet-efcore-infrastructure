@@ -314,6 +314,7 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
         bool success = false;
         PropertyValues? proposedValues, databaseValues;
         object? proposedValue, databaseValue;
+        int retryCount = 0;
 
         while (!success)
         {
@@ -365,6 +366,15 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
                     {
                         throw new NotSupportedException($"The entity type {entry.Entity.GetType().Name} is not supported for concurrency conflicts.");
                     }
+                }
+
+                //Add some jitter to the retry to avoid a thundering herd.
+                await Task.Delay(new Random().Next(0, 1000));
+
+                // Break out of the loop if we have retried too many times.
+                if (retryCount++ > 5)
+                {
+                    throw new DBConcurrencyException("The record has been modified in the database. 5 attempts to retry have failed, please refresh the data and try again.");
                 }
             }
         }
