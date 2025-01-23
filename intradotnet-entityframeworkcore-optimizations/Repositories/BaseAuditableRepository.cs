@@ -22,7 +22,7 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
     protected readonly TDbContext _context = contextFactory.CreateDbContext();
 
     /// <summary>
-    /// Adds includes to the query.
+    /// Adds includes to the query. Override this method to add includes to the query in each concrete repository.
     /// </summary>
     /// <param name="query">The query to which includes will be added.</param>
     /// <returns>The query with includes added.</returns>
@@ -34,21 +34,44 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
     /// <summary>
     /// Gets the queryable for the entity.
     /// </summary>
-    /// <param name="WithIncludes">Whether to include related entities.</param>
+    /// <param name="withIncludes">Whether to include related entities.</param>
+    /// <param name="asNoTracking">Whether to track the entity.</param>
+    /// <param name="includeDeleted">Whether to include soft deleted entities.</param>
     /// <returns>The queryable for the entity.</returns>
-    public virtual IQueryable<TEntity> GetQueryable(bool WithIncludes = true)
+    public virtual IQueryable<TEntity> GetQueryable(bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false)
     {
-        return WithIncludes ? AddIncludes(_context.Set<TEntity>().AsNoTracking()) : _context.Set<TEntity>().AsNoTracking();
+        IQueryable<TEntity> query = asNoTracking ? _context.Set<TEntity>().AsNoTracking() : _context.Set<TEntity>();
+
+        // As of the current date (23-Jan-2025) the current version of EF Core does not support the HasQueryFilter method with a name parameter.
+        // this means that when using the HasQueryFilter method, the filter will be applied to all queries that are executed on the entity.
+        // This is not always the desired behavior, you may have 3 global query filters, the soft delete filtering being one, and you want to ignore the soft delete but keept the others.
+        // This logical is commented out here until the feature becomes available in EF Core.
+        // In the meantime, we will manually apply a "query filter" herer manually.
+        /*if (includeDeleted)
+        {
+            query = query.IgnoreQueryFilters();
+        }*/
+
+        if(!includeDeleted)
+        {
+            // Apply soft delete filter.
+            query = query.Where(x => x.DeletedOn == null);
+        }
+
+        return withIncludes ? AddIncludes(query) : query;
     }
 
     /// <summary>
     /// Asynchronously gets an entity that matches the specified identity predicate.
     /// </summary>
     /// <param name="identityPredicate">The predicate to identify the entity.</param>
+    /// <param name="withIncludes">Whether to include related entities.</param>
+    /// <param name="asNoTracking">Whether to track the entity.</param>
+    /// <param name="includeDeleted">Whether to include soft deleted entities.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the entity if found; otherwise, null.</returns>
-    public virtual async ValueTask<TEntity?> GetAsync(Expression<Func<TEntity, bool>> identityPredicate)
+    public virtual async ValueTask<TEntity?> GetAsync(Expression<Func<TEntity, bool>> identityPredicate, bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false)
     {
-        return (await FindAsync(identityPredicate)).FirstOrDefault();
+        return (await FindAsync(identityPredicate, withIncludes, asNoTracking, includeDeleted)).FirstOrDefault();
     }
 
     /// <summary>
@@ -56,39 +79,51 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
     /// </summary>
     /// <param name="dbContext">The database context to use.</param>
     /// <param name="identityPredicate">The predicate to identify the entity.</param>
+    /// <param name="withIncludes">Whether to include related entities.</param>
+    /// <param name="asNoTracking">Whether to track the entity.</param>
+    /// <param name="includeDeleted">Whether to include soft deleted entities.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the entity if found; otherwise, null.</returns>
-    public virtual async ValueTask<TEntity?> GetAsync(TDbContext dbContext, Expression<Func<TEntity, bool>> identityPredicate)
+    public virtual async ValueTask<TEntity?> GetAsync(TDbContext dbContext, Expression<Func<TEntity, bool>> identityPredicate, bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false)
     {
-        return (await FindAsync(dbContext, identityPredicate)).FirstOrDefault();
+        return (await FindAsync(dbContext, identityPredicate, withIncludes, asNoTracking, includeDeleted)).FirstOrDefault();
     }
 
     /// <summary>
     /// Asynchronously gets all entities.
     /// </summary>
+    /// <param name="withIncludes">Whether to include related entities.</param>
+    /// <param name="asNoTracking">Whether to track the entity.</param>
+    /// <param name="includeDeleted">Whether to include soft deleted entities.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains an enumerable of entities.</returns>
-    public virtual async ValueTask<IEnumerable<TEntity>> GetAllAsync()
+    public virtual async ValueTask<IEnumerable<TEntity>> GetAllAsync(bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false)
     {
-        return await GetAllAsync(_context);
+        return await GetAllAsync(_context, withIncludes, asNoTracking, includeDeleted);
     }
 
     /// <summary>
     /// Asynchronously gets all entities from the specified database context.
     /// </summary>
     /// <param name="dbContext">The database context to use.</param>
+    /// <param name="withIncludes">Whether to include related entities.</param>
+    /// <param name="asNoTracking">Whether to track the entity.</param>
+    /// <param name="includeDeleted">Whether to include soft deleted entities.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains an enumerable of entities.</returns>
-    public virtual async ValueTask<IEnumerable<TEntity>> GetAllAsync(TDbContext dbContext)
+    public virtual async ValueTask<IEnumerable<TEntity>> GetAllAsync(TDbContext dbContext, bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false)
     {
-        return await AddIncludes(dbContext.Set<TEntity>().AsNoTracking()).ToListAsync();
+        return await GetQueryable(withIncludes, asNoTracking, includeDeleted).ToListAsync();
     }
 
     /// <summary>
     /// Asynchronously finds entities that match the specified predicate.
     /// </summary>
     /// <param name="wherePredicate">The predicate to filter the entities.</param>
+    /// <param name="withIncludes">Whether to include related entities.</param>
+    /// <param name="asNoTracking">Whether to track the entity.</param>
+    /// <param name="includeDeleted">Whether to include soft deleted entities.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains an enumerable of entities that match the predicate.</returns>
-    public virtual async ValueTask<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> wherePredicate)
+    public virtual async ValueTask<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> wherePredicate, bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false)
     {
-        return await FindAsync(_context, wherePredicate);
+        return await FindAsync(_context, wherePredicate, withIncludes, asNoTracking, includeDeleted);
     }
 
     /// <summary>
@@ -96,10 +131,13 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
     /// </summary>
     /// <param name="dbContext">The database context to use.</param>
     /// <param name="wherePredicate">The predicate to filter the entities.</param>
+    /// <param name="withIncludes">Whether to include related entities.</param>
+    /// <param name="asNoTracking">Whether to track the entity.</param>
+    /// <param name="includeDeleted">Whether to include soft deleted entities.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains an enumerable of entities that match the predicate.</returns>
-    public virtual async ValueTask<IEnumerable<TEntity>> FindAsync(TDbContext dbContext, Expression<Func<TEntity, bool>> wherePredicate)
+    public virtual async ValueTask<IEnumerable<TEntity>> FindAsync(TDbContext dbContext, Expression<Func<TEntity, bool>> wherePredicate, bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false)
     {
-        return await AddIncludes(dbContext.Set<TEntity>().AsNoTracking().Where(wherePredicate)).ToListAsync();
+        return await GetQueryable(withIncludes, asNoTracking, includeDeleted).Where(wherePredicate).ToListAsync();
     }
 
     /// <summary>
@@ -223,29 +261,38 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
     /// Finds entities that match the specified predicate.
     /// </summary>
     /// <param name="wherePredicate">The predicate to filter the entities.</param>
+    /// <param name="withIncludes">Whether to include related entities.</param>
+    /// <param name="asNoTracking">Whether to track the entity.</param>
+    /// <param name="includeDeleted">Whether to include soft deleted entities.</param>
     /// <returns>An enumerable of entities that match the predicate.</returns>
-    public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> wherePredicate)
+    public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> wherePredicate, bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false)
     {
-        return FindAsync(wherePredicate).Result;
+        return FindAsync(wherePredicate, withIncludes, asNoTracking, includeDeleted).Result;
     }
 
     /// <summary>
     /// Gets all entities.
     /// </summary>
+    /// <param name="withIncludes">Whether to include related entities.</param>
+    /// <param name="asNoTracking">Whether to track the entity.</param>
+    /// <param name="includeDeleted">Whether to include soft deleted entities.</param>
     /// <returns>An enumerable of all entities.</returns>
-    public IEnumerable<TEntity> GetAll()
+    public IEnumerable<TEntity> GetAll(bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false)
     {
-        return GetAllAsync().Result;
+        return GetAllAsync(withIncludes, asNoTracking, includeDeleted).Result;
     }
 
     /// <summary>
     /// Gets an entity that matches the specified identity predicate.
     /// </summary>
     /// <param name="identityPredicate">The predicate to identify the entity.</param>
+    /// <param name="withIncludes">Whether to include related entities.</param>
+    /// <param name="asNoTracking">Whether to track the entity.</param>
+    /// <param name="includeDeleted">Whether to include soft deleted entities.</param>
     /// <returns>The entity that matches the predicate, or null if no entity is found.</returns>
-    public TEntity? Get(Expression<Func<TEntity, bool>> identityPredicate)
+    public TEntity? Get(Expression<Func<TEntity, bool>> identityPredicate, bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false)
     {
-        return GetAsync(identityPredicate).Result;
+        return GetAsync(identityPredicate, withIncludes, asNoTracking, includeDeleted).Result;
     }
 
     /// <summary>
