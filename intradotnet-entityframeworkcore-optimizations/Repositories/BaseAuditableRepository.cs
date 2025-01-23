@@ -1,7 +1,9 @@
 using System.Data;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using IntraDotNet.EntityFrameworkCore.Optimizations.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace IntraDotNet.EntityFrameworkCore.Optimizations.Repositories;
 
@@ -252,7 +254,73 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
     /// <returns>A task that represents the asynchronous save operation.</returns>
     public async ValueTask SaveChangesAsync()
     {
-        await _context.SaveChangesAsync();
+        await SaveChangesAsync(null);
+    }
+
+    /// <summary>
+    /// Asynchronously saves all changes made in this context to the database.
+    /// </summary>
+    /// <param name="handleConcurrencyConflictForProperty">A method to handle concurrency conflicts for a property. First parameter is the property being inspected, the second parameter is the proposed value and the third parameter is the current database value.</param>
+    /// <returns>A task that represents the asynchronous save operation.</returns>
+    public async ValueTask SaveChangesAsync(Func<Microsoft.EntityFrameworkCore.Metadata.IProperty, object?, object?, object?>? handleConcurrencyConflictForProperty)
+    {
+        bool success = false;
+        PropertyValues? proposedValues, databaseValues;
+        object? proposedValue, databaseValue;
+
+        while (!success)
+        {
+            try
+            {
+                await _context.SaveChangesAsync();
+                success = true;
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                success = false;
+
+                foreach (var entry in ex.Entries)
+                {
+                    if (entry.Entity is TEntity)
+                    {
+                        proposedValues = entry.CurrentValues;
+                        databaseValues = await entry.GetDatabaseValuesAsync();
+
+                        if (databaseValues == null)
+                        {
+                            throw new NotSupportedException("The entity has been deleted in the database.");
+                        }
+                        else
+                        {
+                            foreach (Microsoft.EntityFrameworkCore.Metadata.IProperty property in proposedValues.Properties)
+                            {
+                                proposedValue = proposedValues[property];
+                                databaseValue = databaseValues[property];
+
+                                // Decide how to handle the concurrency conflict.
+                                //Call the user defined method to handle the conflict
+                                if (handleConcurrencyConflictForProperty != null)
+                                {
+                                    proposedValues[property] = handleConcurrencyConflictForProperty(property, proposedValue, databaseValue);
+                                }
+                                else
+                                {
+                                    // Use proposed values to handle the conflict.
+                                    proposedValues[property] = proposedValue;
+                                }
+                            }
+
+                            // Refresh original values to bypass next concurrency check.
+                            entry.OriginalValues.SetValues(databaseValues);
+                        }
+                    }
+                    else
+                    {
+                        throw new NotSupportedException($"The entity type {entry.Entity.GetType().Name} is not supported for concurrency conflicts.");
+                    }
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -260,6 +328,16 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
     /// </summary>
     public void SaveChanges()
     {
-        _context.SaveChanges();
+        SaveChangesAsync().GetAwaiter().GetResult();
+    }
+
+    /// <summary>
+    /// Saves all changes made in this context to the database.
+    /// </summary>
+    /// <param name="handleConcurrencyConflictForProperty">A method to handle concurrency conflicts for a property. First parameter is the property being inspected, the second parameter is the proposed value and the third parameter is the current database value.</param>
+    /// 
+    public void SaveChanges(Func<Microsoft.EntityFrameworkCore.Metadata.IProperty, object?, object?, object?> handleConcurrencyConflictForProperty)
+    {
+        SaveChangesAsync(handleConcurrencyConflictForProperty).GetAwaiter().GetResult();
     }
 }
