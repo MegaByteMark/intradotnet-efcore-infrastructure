@@ -32,4 +32,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../intradotnet-entityframeworkcore-interfaces/intradotnet-entityframeworkcore-interfaces.csproj" />
+  </ItemGroup>
+
 </Project>

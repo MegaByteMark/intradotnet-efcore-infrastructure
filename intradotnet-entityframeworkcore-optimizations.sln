@@ -7,6 +7,8 @@ Project("{6e7e5f22-7609-416f-b2e1-c07f48e9c684}") = "intradotnet-entityframework
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "intradotnet-entityframeworkcore-optimizations-test", "intradotnet-entityframeworkcore-optimizations-test\intradotnet-entityframeworkcore-optimizations-test.csproj", "{8C88EA74-11F9-4BD2-90BD-C88411653363}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "intradotnet-entityframeworkcore-interfaces", "intradotnet-entityframeworkcore-interfaces\intradotnet-entityframeworkcore-interfaces.csproj", "{9AB34933-5332-4F1C-B438-4EABCC2C7223}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{8C88EA74-11F9-4BD2-90BD-C88411653363}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C88EA74-11F9-4BD2-90BD-C88411653363}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C88EA74-11F9-4BD2-90BD-C88411653363}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AB34933-5332-4F1C-B438-4EABCC2C7223}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AB34933-5332-4F1C-B438-4EABCC2C7223}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AB34933-5332-4F1C-B438-4EABCC2C7223}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AB34933-5332-4F1C-B438-4EABCC2C7223}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

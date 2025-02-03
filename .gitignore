@@ -401,3 +401,7 @@ FodyWeavers.xsd
 
 intradotnet-entityframeworkcore-optimizations/bin
 intradotnet-entityframeworkcore-optimizations/obj
+intradotnet-entityframeworkcore-optimizations-test/bin
+intradotnet-entityframeworkcore-optimizations-test/obj
+intradotnet-entityframeworkcore-interfaces/bin
+intradotnet-entityframeworkcore-interfaces/obj
