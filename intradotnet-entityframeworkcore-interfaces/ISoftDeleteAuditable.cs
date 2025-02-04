@@ -1,10 +1,8 @@
-using System.ComponentModel.DataAnnotations;
+namespace IntraDotNet.EntityFrameworkCore.Interfaces;
 
 public interface ISoftDeleteAuditable
 {
     public DateTimeOffset? DeletedOn { get; set; }
-
-    [MaxLength(50)]
     public string? DeletedBy { get; set; }
 
 }

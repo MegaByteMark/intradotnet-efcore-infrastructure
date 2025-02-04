@@ -2,9 +2,25 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <RootNamespace>intradotnet_entityframeworkcore_interfaces</RootNamespace>
+    <RootNamespace>IntraDotNet.EntityFrameworkCore.Interfaces</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>IntraDotNet.EntityFrameworkCore.Interfaces</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>MegaByteMark</Authors>
+    <Description>Interfaces for IntraDotNet.EntityFrameworkCore to assist with Testing and Model creation.</Description>
+    <PackageTags>EntityFrameworkCore;EFCore;Utilities;Helpers;ORM;DataAccess;Database;DotNet;CSharp</PackageTags>
+    <RepositoryUrl>https://github.com/MegaByteMark/intradotnet-entityframeworkcore</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/MegaByteMark/intradotnet-entityframeworkcore</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
 </Project>

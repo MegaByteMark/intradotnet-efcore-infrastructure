@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace IntraDotNet.EntityFrameworkCore.Optimizations.Interfaces;
+namespace IntraDotNet.EntityFrameworkCore.Interfaces;
 
 public interface IRowVersion
 {
     [Timestamp]
-    byte[] RowVersion { get; set; }
+    byte[]? RowVersion { get; set; }
 }

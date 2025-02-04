@@ -1,28 +1,28 @@
-using IntraDotNet.EntityFrameworkCore.Optimizations.Interfaces;
-using IntraDotNet.EntityFrameworkCore.Optimizations.ValueGenerators;
+using IntraDotNet.EntityFrameworkCore.Interfaces;
+using IntraDotNet.EntityFrameworkCore.ValueGenerators;
 using Microsoft.EntityFrameworkCore;
 
-namespace IntraDotNet.EntityFrameworkCore.Optimizations.Relational;
+namespace IntraDotNet.EntityFrameworkCore.Relational;
 
 public static class ModelBuilderExtensions
 {
-    public static ModelBuilder EnableAuditable<TEntity>(this ModelBuilder modelBuilder) where TEntity : class, IAuditable
+    public static ModelBuilder UseAuditable<TEntity>(this ModelBuilder modelBuilder) where TEntity : class, IAuditable
     {
-        modelBuilder.EnableCreateAudit<TEntity>();
-        modelBuilder.EnableUpdateAudit<TEntity>();
-        modelBuilder.EnableSoftDelete<TEntity>();
+        modelBuilder.UseCreateAudit<TEntity>();
+        modelBuilder.UseUpdateAudit<TEntity>();
+        modelBuilder.UseSoftDelete<TEntity>();
 
         return modelBuilder;
     }
 
-    public static ModelBuilder EnableCreateAudit<TEntity>(this ModelBuilder modelBuilder) where TEntity : class, ICreateAuditable
+    public static ModelBuilder UseCreateAudit<TEntity>(this ModelBuilder modelBuilder) where TEntity : class, ICreateAuditable
     {
         modelBuilder.Entity<TEntity>().Property(x => x.CreatedOn).ValueGeneratedOnAdd().HasValueGenerator<CurrentDateTimeValueGenerator>();
 
         return modelBuilder;
     }
 
-    public static ModelBuilder EnableUpdateAudit<TEntity>(this ModelBuilder modelBuilder) where TEntity : class, IUpdateAuditable
+    public static ModelBuilder UseUpdateAudit<TEntity>(this ModelBuilder modelBuilder) where TEntity : class, IUpdateAuditable
     {
         modelBuilder.Entity<TEntity>().Property(x => x.LastUpdateOn).ValueGeneratedOnUpdate().HasValueGenerator<CurrentDateTimeValueGenerator>();
 
@@ -37,7 +37,7 @@ public static class ModelBuilderExtensions
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <param name="modelBuilder">The model builder being extended.</param>
     /// <returns>The model builder with soft delete enabled for the entity.</returns>
-    public static ModelBuilder EnableSoftDelete<TEntity>(this ModelBuilder modelBuilder) where TEntity : class, ISoftDeleteAuditable
+    public static ModelBuilder UseSoftDelete<TEntity>(this ModelBuilder modelBuilder) where TEntity : class, ISoftDeleteAuditable
     {
         modelBuilder.Entity<TEntity>().HasIndex(x => x.DeletedOn).HasFilter("DeletedOn IS NOT NULL");
 
@@ -55,7 +55,7 @@ public static class ModelBuilderExtensions
         return modelBuilder;
     }
 
-    public static ModelBuilder EnableOptimisticConcurrency<TEntity>(this ModelBuilder modelBuilder) where TEntity : class, IRowVersion
+    public static ModelBuilder UseOptimisticConcurrency<TEntity>(this ModelBuilder modelBuilder) where TEntity : class, IRowVersion
     {
         modelBuilder.Entity<TEntity>().Property(x => x.RowVersion).IsRowVersion();
 
