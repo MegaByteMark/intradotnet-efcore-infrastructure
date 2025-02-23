@@ -3,11 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{6E7E5F22-7609-416F-B2E1-C07F48E9C684}") = "intradotnet-entityframeworkcore", "intradotnet-entityframeworkcore\intradotnet-entityframeworkcore.csproj", "{4A961D4F-EDE9-4D25-9596-F055AE2FF971}"
+Project("{6E7E5F22-7609-416F-B2E1-C07F48E9C684}") = "intradotnet-entityframeworkcore-infrastructure", "intradotnet-entityframeworkcore-infrastructure\intradotnet-entityframeworkcore-infrastructure.csproj", "{4A961D4F-EDE9-4D25-9596-F055AE2FF971}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "intradotnet-entityframeworkcore-test", "intradotnet-entityframeworkcore-test\intradotnet-entityframeworkcore-test.csproj", "{8C88EA74-11F9-4BD2-90BD-C88411653363}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "intradotnet-entityframeworkcore-interfaces", "intradotnet-entityframeworkcore-interfaces\intradotnet-entityframeworkcore-interfaces.csproj", "{9AB34933-5332-4F1C-B438-4EABCC2C7223}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "intradotnet-entityframeworkcore-infrastructure-test", "intradotnet-entityframeworkcore-infrastructure-test\intradotnet-entityframeworkcore-infrastructure-test.csproj", "{8C88EA74-11F9-4BD2-90BD-C88411653363}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,11 +21,7 @@ Global
 		{8C88EA74-11F9-4BD2-90BD-C88411653363}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C88EA74-11F9-4BD2-90BD-C88411653363}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C88EA74-11F9-4BD2-90BD-C88411653363}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9AB34933-5332-4F1C-B438-4EABCC2C7223}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9AB34933-5332-4F1C-B438-4EABCC2C7223}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9AB34933-5332-4F1C-B438-4EABCC2C7223}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9AB34933-5332-4F1C-B438-4EABCC2C7223}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
+		EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection

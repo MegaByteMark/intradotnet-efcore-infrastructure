@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace IntraDotNet.EntityFrameworkCore.Interfaces;
+namespace IntraDotNet.EntityFrameworkCore.Infrastructure.Interfaces;
 
 public interface IRowVersion
 {

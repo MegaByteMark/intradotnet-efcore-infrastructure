@@ -1,8 +1,7 @@
 using System.Linq.Expressions;
-using IntraDotNet.EntityFrameworkCore.Interfaces;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace IntraDotNet.EntityFrameworkCore.Repositories;
+namespace IntraDotNet.EntityFrameworkCore.Infrastructure.Interfaces;
 
 public interface IBaseAuditableRepository<TEntity> where TEntity : class, IAuditable
 {

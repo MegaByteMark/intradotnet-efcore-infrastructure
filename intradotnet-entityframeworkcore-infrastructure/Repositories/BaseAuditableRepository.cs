@@ -1,10 +1,10 @@
 using System.Data;
 using System.Linq.Expressions;
-using IntraDotNet.EntityFrameworkCore.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using IntraDotNet.EntityFrameworkCore.Infrastructure.Interfaces;
 
-namespace IntraDotNet.EntityFrameworkCore.Repositories;
+namespace IntraDotNet.EntityFrameworkCore.Infrastructure.Repositories;
 
 /// <summary>
 /// Abstract base repository class for handling auditable entities.

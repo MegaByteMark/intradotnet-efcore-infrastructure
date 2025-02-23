@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <RootNamespace>IntraDotNet.EntityFrameworkCore.Tests</RootNamespace>
+    <RootNamespace>IntraDotNet.EntityFrameworkCore.Infrastructure.Tests</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
@@ -16,8 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../intradotnet-entityframeworkcore-interfaces/intradotnet-entityframeworkcore-interfaces.csproj" />
-    <ProjectReference Include="../intradotnet-entityframeworkcore/intradotnet-entityframeworkcore.csproj" />
+    <ProjectReference Include="../intradotnet-entityframeworkcore-infrastructure/intradotnet-entityframeworkcore-infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

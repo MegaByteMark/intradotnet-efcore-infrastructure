@@ -2,20 +2,20 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <RootNamespace>IntraDotNet.EntityFrameworkCore</RootNamespace>
+    <RootNamespace>IntraDotNet.EntityFrameworkCore.Infrastructure</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>IntraDotNet.EntityFrameworkCore</PackageId>
+    <PackageId>IntraDotNet.EntityFrameworkCore.Infrastructure</PackageId>
     <Version>1.0.0</Version>
     <Authors>MegaByteMark</Authors>
     <Description>Optimization classes to remove boilerplate when generating entityframework dbcontexts</Description>
     <PackageTags>EntityFrameworkCore;EFCore;Utilities;Helpers;ORM;DataAccess;Database;DotNet;CSharp</PackageTags>
-    <RepositoryUrl>https://github.com/MegaByteMark/intradotnet-entityframeworkcore</RepositoryUrl>
+    <RepositoryUrl>https://github.com/MegaByteMark/intradotnet-entityframeworkcore.infrastructure</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/MegaByteMark/intradotnet-entityframeworkcore</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/MegaByteMark/intradotnet-entityframeworkcore.infrastructure</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
@@ -30,10 +30,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="../intradotnet-entityframeworkcore-interfaces/intradotnet-entityframeworkcore-interfaces.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,8 @@
-using IntraDotNet.EntityFrameworkCore.Interfaces;
-using IntraDotNet.EntityFrameworkCore.ValueGenerators;
 using Microsoft.EntityFrameworkCore;
+using IntraDotNet.EntityFrameworkCore.Infrastructure.Interfaces;
+using IntraDotNet.EntityFrameworkCore.Infrastructure.ValueGenerators;
 
-namespace IntraDotNet.EntityFrameworkCore.Relational;
+namespace IntraDotNet.EntityFrameworkCore.Infrastructure.Relational;
 
 public static class ModelBuilderExtensions
 {

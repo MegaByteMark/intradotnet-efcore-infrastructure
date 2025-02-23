@@ -1,4 +1,4 @@
-# IntraDotNet EntityFrameworkCore
+# IntraDotNet EntityFrameworkCore Infrastructure
 
 Optimization classes to remove boilerplate when generating EntityFramework DbContexts, their associated entities and implementing common functionality like row based change auditing, soft deleting and optimistic concurrency.
 
