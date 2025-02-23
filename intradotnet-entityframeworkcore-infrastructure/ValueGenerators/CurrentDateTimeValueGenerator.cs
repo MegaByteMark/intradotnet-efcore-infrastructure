@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace IntraDotNet.EntityFrameworkCore.Optimizations.ValueGenerators;
+namespace IntraDotNet.EntityFrameworkCore.Infrastructure.ValueGenerators;
 
 public class CurrentDateTimeValueGenerator : Microsoft.EntityFrameworkCore.ValueGeneration.ValueGenerator<DateTimeOffset>
 {

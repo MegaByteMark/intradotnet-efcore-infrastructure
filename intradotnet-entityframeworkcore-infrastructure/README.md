@@ -1,6 +1,6 @@
 # IntraDotNet EntityFrameworkCore Infrastructure
 
-Optimization classes to remove boilerplate when generating EntityFramework DbContexts, their associated entities and implementing common functionality like row based change auditing, soft deleting and optimistic concurrency, repository and unit of work patterns.
+Optimization classes to remove boilerplate when generating EntityFramework DbContexts, their associated entities and implementing common functionality like row based change auditing, soft deleting and optimistic concurrency.
 
 ## Getting Started
 
@@ -13,7 +13,7 @@ Optimization classes to remove boilerplate when generating EntityFramework DbCon
 
 1. Add the NuGet package to your project:
     ```sh
-    dotnet add package IntraDotNet.EntityFrameworkCore.Infrastructure
+    dotnet add package IntraDotNet.EntityFrameworkCore
     ```
 
 ### Usage

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <RootNamespace>intradotnet_entityframeworkcore_optimizations_test</RootNamespace>
+    <RootNamespace>IntraDotNet.EntityFrameworkCore.Infrastructure.Tests</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../intradotnet-entityframeworkcore-optimizations/intradotnet-entityframeworkcore-optimizations.csproj" />
+    <ProjectReference Include="../intradotnet-entityframeworkcore-infrastructure/intradotnet-entityframeworkcore-infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

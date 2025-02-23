@@ -1,18 +1,17 @@
 using System.Data;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
-using IntraDotNet.EntityFrameworkCore.Optimizations.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using IntraDotNet.EntityFrameworkCore.Infrastructure.Interfaces;
 
-namespace IntraDotNet.EntityFrameworkCore.Optimizations.Repositories;
+namespace IntraDotNet.EntityFrameworkCore.Infrastructure.Repositories;
 
 /// <summary>
 /// Abstract base repository class for handling auditable entities.
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <typeparam name="TDbContext">The type of the database context.</typeparam>
-public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFactory<TDbContext> contextFactory) : IBaseAuditableRepository<TEntity>
+public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFactory<TDbContext> contextFactory)
  where TDbContext : DbContext
  where TEntity : class, IAuditable
 {
@@ -52,7 +51,7 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
             query = query.IgnoreQueryFilters();
         }*/
 
-        if(!includeDeleted)
+        if (!includeDeleted)
         {
             // Apply soft delete filter.
             query = query.Where(x => x.DeletedOn == null);
@@ -68,24 +67,11 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
     /// <param name="withIncludes">Whether to include related entities.</param>
     /// <param name="asNoTracking">Whether to track the entity.</param>
     /// <param name="includeDeleted">Whether to include soft deleted entities.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the entity if found; otherwise, null.</returns>
-    public virtual async ValueTask<TEntity?> GetAsync(Expression<Func<TEntity, bool>> identityPredicate, bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false)
+    public virtual async ValueTask<TEntity?> GetAsync(Expression<Func<TEntity, bool>> identityPredicate, bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false, CancellationToken cancellationToken = default)
     {
-        return (await FindAsync(identityPredicate, withIncludes, asNoTracking, includeDeleted)).FirstOrDefault();
-    }
-
-    /// <summary>
-    /// Asynchronously gets an entity from the specified database context that matches the specified identity predicate.
-    /// </summary>
-    /// <param name="dbContext">The database context to use.</param>
-    /// <param name="identityPredicate">The predicate to identify the entity.</param>
-    /// <param name="withIncludes">Whether to include related entities.</param>
-    /// <param name="asNoTracking">Whether to track the entity.</param>
-    /// <param name="includeDeleted">Whether to include soft deleted entities.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains the entity if found; otherwise, null.</returns>
-    public virtual async ValueTask<TEntity?> GetAsync(TDbContext dbContext, Expression<Func<TEntity, bool>> identityPredicate, bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false)
-    {
-        return (await FindAsync(dbContext, identityPredicate, withIncludes, asNoTracking, includeDeleted)).FirstOrDefault();
+        return (await FindAsync(identityPredicate, withIncludes, asNoTracking, includeDeleted, cancellationToken)).FirstOrDefault();
     }
 
     /// <summary>
@@ -94,23 +80,11 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
     /// <param name="withIncludes">Whether to include related entities.</param>
     /// <param name="asNoTracking">Whether to track the entity.</param>
     /// <param name="includeDeleted">Whether to include soft deleted entities.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains an enumerable of entities.</returns>
-    public virtual async ValueTask<IEnumerable<TEntity>> GetAllAsync(bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false)
+    public virtual async ValueTask<IEnumerable<TEntity>> GetAllAsync(bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false, CancellationToken cancellationToken = default)
     {
-        return await GetAllAsync(_context, withIncludes, asNoTracking, includeDeleted);
-    }
-
-    /// <summary>
-    /// Asynchronously gets all entities from the specified database context.
-    /// </summary>
-    /// <param name="dbContext">The database context to use.</param>
-    /// <param name="withIncludes">Whether to include related entities.</param>
-    /// <param name="asNoTracking">Whether to track the entity.</param>
-    /// <param name="includeDeleted">Whether to include soft deleted entities.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains an enumerable of entities.</returns>
-    public virtual async ValueTask<IEnumerable<TEntity>> GetAllAsync(TDbContext dbContext, bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false)
-    {
-        return await GetQueryable(withIncludes, asNoTracking, includeDeleted).ToListAsync();
+        return await GetQueryable(withIncludes, asNoTracking, includeDeleted).ToListAsync(cancellationToken);
     }
 
     /// <summary>
@@ -120,24 +94,11 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
     /// <param name="withIncludes">Whether to include related entities.</param>
     /// <param name="asNoTracking">Whether to track the entity.</param>
     /// <param name="includeDeleted">Whether to include soft deleted entities.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains an enumerable of entities that match the predicate.</returns>
-    public virtual async ValueTask<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> wherePredicate, bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false)
+    public virtual async ValueTask<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> wherePredicate, bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false, CancellationToken cancellationToken = default)
     {
-        return await FindAsync(_context, wherePredicate, withIncludes, asNoTracking, includeDeleted);
-    }
-
-    /// <summary>
-    /// Asynchronously finds entities that match the specified predicate from the specified database context.
-    /// </summary>
-    /// <param name="dbContext">The database context to use.</param>
-    /// <param name="wherePredicate">The predicate to filter the entities.</param>
-    /// <param name="withIncludes">Whether to include related entities.</param>
-    /// <param name="asNoTracking">Whether to track the entity.</param>
-    /// <param name="includeDeleted">Whether to include soft deleted entities.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains an enumerable of entities that match the predicate.</returns>
-    public virtual async ValueTask<IEnumerable<TEntity>> FindAsync(TDbContext dbContext, Expression<Func<TEntity, bool>> wherePredicate, bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false)
-    {
-        return await GetQueryable(withIncludes, asNoTracking, includeDeleted).Where(wherePredicate).ToListAsync();
+        return await GetQueryable(withIncludes, asNoTracking, includeDeleted).Where(wherePredicate).ToListAsync(cancellationToken);
     }
 
     /// <summary>
@@ -145,30 +106,19 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
     /// </summary>
     /// <param name="value">The entity to add or update.</param>
     /// <param name="identityPredicate">The predicate to identify the entity.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    public virtual async ValueTask AddOrUpdateAsync(TEntity value, Expression<Func<TEntity, bool>> identityPredicate)
-    {
-        await AddOrUpdateAsync(_context, value, identityPredicate);
-    }
-
-    /// <summary>
-    /// Asynchronously adds or updates an entity based on the specified identity predicate in the specified database context.
-    /// </summary>
-    /// <param name="dbContext">The database context to use.</param>
-    /// <param name="value">The entity to add or update.</param>
-    /// <param name="identityPredicate">The predicate to identify the entity.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
-    public virtual async ValueTask AddOrUpdateAsync(TDbContext dbContext, TEntity value, Expression<Func<TEntity, bool>> identityPredicate)
+    public virtual async ValueTask AddOrUpdateAsync(TEntity value, Expression<Func<TEntity, bool>> identityPredicate, CancellationToken cancellationToken = default)
     {
         TEntity? existing;
         DbSet<TEntity> dbSet;
 
-        dbSet = dbContext.Set<TEntity>();
-        existing = await dbSet.SingleOrDefaultAsync(identityPredicate);
+        dbSet = _context.Set<TEntity>();
+        existing = await dbSet.SingleOrDefaultAsync(identityPredicate, cancellationToken);
 
         if (existing != null)
         {
-            dbContext.Entry(existing).CurrentValues.SetValues(value);
+            _context.Entry(existing).CurrentValues.SetValues(value);
 
             // Undelete if row was soft deleted.
             existing.DeletedOn = null;
@@ -194,26 +144,15 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
     /// Asynchronously deletes an entity that matches the specified identity predicate.
     /// </summary>
     /// <param name="identityPredicate">The predicate to identify the entity to delete.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    public virtual async ValueTask DeleteAsync(Expression<Func<TEntity, bool>> identityPredicate)
-    {
-        await DeleteAsync(_context, identityPredicate);
-    }
-
-    /// <summary>
-    /// Asynchronously deletes an entity that matches the specified identity predicate in the specified database context.
-    /// </summary>
-    /// <param name="dbContext">The database context to use.</param>
-    /// <param name="identityPredicate">The predicate to identify the entity to delete.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
-    /// <exception cref="DBConcurrencyException">Thrown if the record has been modified in the database.</exception>
-    public virtual async ValueTask DeleteAsync(TDbContext dbContext, Expression<Func<TEntity, bool>> identityPredicate)
+    public virtual async ValueTask DeleteAsync(Expression<Func<TEntity, bool>> identityPredicate, CancellationToken cancellationToken = default)
     {
         TEntity? existing;
         int rowsAffected;
-        DbSet<TEntity> dbSet = dbContext.Set<TEntity>();
+        DbSet<TEntity> dbSet = _context.Set<TEntity>();
 
-        existing = await dbSet.SingleOrDefaultAsync(identityPredicate);
+        existing = await dbSet.SingleOrDefaultAsync(identityPredicate, cancellationToken);
 
         if (existing != null)
         {
@@ -223,7 +162,7 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
                     x => identityPredicate.Compile().Invoke(x)
                     && ((IRowVersion)x).RowVersion == ((IRowVersion)existing).RowVersion
                 )
-                .ExecuteUpdateAsync(u => u.SetProperty(p => p.DeletedOn, DateTime.UtcNow));
+                .ExecuteUpdateAsync(u => u.SetProperty(p => p.DeletedOn, DateTime.UtcNow), cancellationToken);
 
                 if (rowsAffected == 0)
                 {
@@ -233,7 +172,7 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
             else
             {
                 rowsAffected = await dbSet.Where(identityPredicate)
-                .ExecuteUpdateAsync(u => u.SetProperty(p => p.DeletedOn, DateTime.UtcNow));
+                .ExecuteUpdateAsync(u => u.SetProperty(p => p.DeletedOn, DateTime.UtcNow), cancellationToken);
             }
         }
     }
@@ -298,18 +237,20 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
     /// <summary>
     /// Asynchronously saves all changes made in this context to the database.
     /// </summary>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous save operation.</returns>
-    public async ValueTask SaveChangesAsync()
+    public async ValueTask SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        await SaveChangesAsync(null);
+        await SaveChangesAsync(null, cancellationToken);
     }
 
     /// <summary>
     /// Asynchronously saves all changes made in this context to the database.
     /// </summary>
-    /// <param name="handleConcurrencyConflictForProperty">A method to handle concurrency conflicts for a property. First parameter is the property being inspected, the second parameter is the proposed value and the third parameter is the current database value.</param>
+    /// <param name="handleConcurrencyConflict">A callback function to handle a concurrency conflict for optimistic concurrency. First parameter is the proposed values, second parameter this the database values. The function needs to return the updated proposed values you want to pass to the database.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous save operation.</returns>
-    public async ValueTask SaveChangesAsync(Func<Microsoft.EntityFrameworkCore.Metadata.IProperty, object?, object?, object?>? handleConcurrencyConflictForProperty)
+    public async ValueTask SaveChangesAsync(Func<PropertyValues, PropertyValues, PropertyValues>? handleConcurrencyConflict, CancellationToken cancellationToken = default)
     {
         bool success = false;
         PropertyValues? proposedValues, databaseValues;
@@ -320,7 +261,7 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
         {
             try
             {
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
                 success = true;
             }
             catch (DbUpdateConcurrencyException ex)
@@ -332,7 +273,7 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
                     if (entry.Entity is TEntity)
                     {
                         proposedValues = entry.CurrentValues;
-                        databaseValues = await entry.GetDatabaseValuesAsync();
+                        databaseValues = await entry.GetDatabaseValuesAsync(cancellationToken);
 
                         if (databaseValues == null)
                         {
@@ -340,19 +281,18 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
                         }
                         else
                         {
-                            foreach (Microsoft.EntityFrameworkCore.Metadata.IProperty property in proposedValues.Properties)
+                            if (handleConcurrencyConflict != null)
                             {
-                                proposedValue = proposedValues[property];
-                                databaseValue = databaseValues[property];
+                                proposedValues = handleConcurrencyConflict(proposedValues, databaseValues);
+                            }
+                            else
+                            {
+                                //Default concurrency resolution
+                                foreach (Microsoft.EntityFrameworkCore.Metadata.IProperty property in proposedValues.Properties)
+                                {
+                                    proposedValue = proposedValues[property];
+                                    databaseValue = databaseValues[property];
 
-                                // Decide how to handle the concurrency conflict.
-                                //Call the user defined method to handle the conflict
-                                if (handleConcurrencyConflictForProperty != null)
-                                {
-                                    proposedValues[property] = handleConcurrencyConflictForProperty(property, proposedValue, databaseValue);
-                                }
-                                else
-                                {
                                     // Use proposed values to handle the conflict.
                                     proposedValues[property] = proposedValue;
                                 }
@@ -369,7 +309,7 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
                 }
 
                 //Add some jitter to the retry to avoid a thundering herd.
-                await Task.Delay(new Random().Next(0, 1000));
+                await Task.Delay(new Random().Next(0, 1000), cancellationToken);
 
                 // Break out of the loop if we have retried too many times.
                 if (retryCount++ > 5)
@@ -393,8 +333,8 @@ public abstract class BaseAuditableRepository<TEntity, TDbContext>(IDbContextFac
     /// </summary>
     /// <param name="handleConcurrencyConflictForProperty">A method to handle concurrency conflicts for a property. First parameter is the property being inspected, the second parameter is the proposed value and the third parameter is the current database value.</param>
     /// 
-    public void SaveChanges(Func<Microsoft.EntityFrameworkCore.Metadata.IProperty, object?, object?, object?> handleConcurrencyConflictForProperty)
+    public void SaveChanges(Func<PropertyValues, PropertyValues, PropertyValues>? handleConcurrencyConflict)
     {
-        SaveChangesAsync(handleConcurrencyConflictForProperty).GetAwaiter().GetResult();
+        SaveChangesAsync(handleConcurrencyConflict).GetAwaiter().GetResult();
     }
 }

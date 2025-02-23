@@ -1,9 +1,7 @@
-using System.ComponentModel.DataAnnotations;
+namespace IntraDotNet.EntityFrameworkCore.Infrastructure.Interfaces;
 
 public interface IUpdateAuditable
 {
     public DateTimeOffset? LastUpdateOn { get; set; }
-
-    [MaxLength(50)]
     public string? LastUpdateBy { get; set; }
 }

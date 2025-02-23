@@ -399,5 +399,7 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-intradotnet-entityframeworkcore-optimizations/bin
-intradotnet-entityframeworkcore-optimizations/obj
+intradotnet-entityframeworkcore-infrastructure/bin
+intradotnet-entityframeworkcore-infrastructure/obj
+intradotnet-entityframeworkcore-infrastructure-test/bin
+intradotnet-entityframeworkcore-infrastructure-test/obj

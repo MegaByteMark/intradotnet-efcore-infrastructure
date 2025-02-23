@@ -2,25 +2,25 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <RootNamespace>IntraDotNet.EntityFrameworkCore.Optimizations</RootNamespace>
+    <RootNamespace>IntraDotNet.EntityFrameworkCore.Infrastructure</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>IntraDotNet.EntityFrameworkCore.Optimizations</PackageId>
+    <PackageId>IntraDotNet.EntityFrameworkCore.Infrastructure</PackageId>
     <Version>1.0.0</Version>
     <Authors>MegaByteMark</Authors>
     <Description>Optimization classes to remove boilerplate when generating entityframework dbcontexts</Description>
-    <PackageTags>aspnet-core</PackageTags>
-    <RepositoryUrl>https://github.com/MegaByteMark/intradotnet-entityframeworkcore-optimizations</RepositoryUrl>
+    <PackageTags>EntityFrameworkCore;EFCore;Utilities;Helpers;ORM;DataAccess;Database;DotNet;CSharp</PackageTags>
+    <RepositoryUrl>https://github.com/MegaByteMark/intradotnet-entityframeworkcore.infrastructure</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/MegaByteMark/intradotnet-entityframeworkcore-optimizations</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/MegaByteMark/intradotnet-entityframeworkcore.infrastructure</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\README.md" Pack="true" PackagePath="\" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
