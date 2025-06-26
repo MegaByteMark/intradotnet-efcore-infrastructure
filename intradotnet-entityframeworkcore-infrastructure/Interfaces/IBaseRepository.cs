@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 
 namespace IntraDotNet.EntityFrameworkCore.Infrastructure.Interfaces;
 
-public interface IBaseAuditableRepository<TEntity> where TEntity : class, IAuditable
+public interface IBaseRepository<TEntity> where TEntity : class
 {
     IQueryable<TEntity> GetQueryable(bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false);
     ValueTask<TEntity?> GetAsync(Expression<Func<TEntity, bool>> identityPredicate, bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false, CancellationToken cancellationToken = default);

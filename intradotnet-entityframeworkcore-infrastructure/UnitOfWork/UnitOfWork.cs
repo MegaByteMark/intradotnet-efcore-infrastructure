@@ -149,9 +149,6 @@ public abstract class UnitOfWork<TDbContext> : IUnitOfWork<TDbContext>
                     throw new ValidationException(validationResult.ErrorMessage);
                 }
 
-                // Set audit fields before saving
-                SetAuditFields();
-
                 result = await Context.SaveChangesAsync(cancellationToken);
                 success = true;
 
@@ -216,28 +213,6 @@ public abstract class UnitOfWork<TDbContext> : IUnitOfWork<TDbContext>
         var task = SaveChangesAsync().AsTask();
 
         return task.GetAwaiter().GetResult();
-    }
-
-    /// <summary>
-    /// Sets audit fields for all tracked entities before saving.
-    /// </summary>
-    private void SetAuditFields()
-    {
-        var entries = Context.ChangeTracker.Entries<IAuditable>();
-        var utcNow = DateTime.UtcNow;
-
-        foreach (var entry in entries)
-        {
-            switch (entry.State)
-            {
-                case EntityState.Added:
-                    entry.Entity.CreatedOn = utcNow;
-                    break;
-                case EntityState.Modified:
-                    entry.Entity.LastUpdateOn = utcNow;
-                    break;
-            }
-        }
     }
 
     /// <summary>
