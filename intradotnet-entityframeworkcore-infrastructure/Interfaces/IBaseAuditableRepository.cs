@@ -1,5 +1,4 @@
 using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace IntraDotNet.EntityFrameworkCore.Infrastructure.Interfaces;
 
@@ -16,8 +15,4 @@ public interface IBaseAuditableRepository<TEntity> where TEntity : class, IAudit
     IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> wherePredicate, bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false);
     IEnumerable<TEntity> GetAll(bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false);
     TEntity? Get(Expression<Func<TEntity, bool>> identityPredicate, bool withIncludes = true, bool asNoTracking = true, bool includeDeleted = false);
-    ValueTask SaveChangesAsync(CancellationToken cancellationToken = default);
-    ValueTask SaveChangesAsync(Func<PropertyValues, PropertyValues, PropertyValues>? handleConcurrencyConflict, CancellationToken cancellationToken = default);
-    void SaveChanges();
-    void SaveChanges(Func<PropertyValues, PropertyValues, PropertyValues>? handleConcurrencyConflict);
 }
