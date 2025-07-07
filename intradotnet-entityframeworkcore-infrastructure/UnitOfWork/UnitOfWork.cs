@@ -134,21 +134,12 @@ public abstract class UnitOfWork<TDbContext> : IUnitOfWork<TDbContext>
         PropertyValues? proposedValues, databaseValues;
         object? proposedValue, databaseValue;
         int retryCount = 0;
-        int result = 0;
-        ValidationResult? validationResult;
+        int result;
 
         while (!success)
         {
             try
             {
-                // Validate entities before saving
-                validationResult = await ValidateAsync(cancellationToken);
-
-                if (validationResult != null)
-                {
-                    throw new ValidationException(validationResult.ErrorMessage);
-                }
-
                 result = await Context.SaveChangesAsync(cancellationToken);
                 success = true;
 
@@ -311,54 +302,5 @@ public abstract class UnitOfWork<TDbContext> : IUnitOfWork<TDbContext>
         await DisposeAsyncCore();
         Dispose(false);
         GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
-    /// Validates all entities in the context that implement IValidatable.
-    /// This method checks for validation errors and returns a ValidationResult if any entity fails validation.
-    /// </summary>
-    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
-    /// <returns>A ValidationResult if any entity fails validation; otherwise, null.</returns>
-    /// <exception cref="ValidationException">Thrown if validation fails for any entity.</exception>
-    public async Task<ValidationResult?> ValidateAsync(CancellationToken cancellationToken = default)
-    {
-        List<EntityEntry> entries = [.. Context.ChangeTracker.Entries().Where(e => e.State == EntityState.Added || e.State == EntityState.Modified)];
-        List<ValidationException> validationErrors = [];
-        ValidationResult? validationResult = null;
-
-        foreach (EntityEntry entry in entries)
-        {
-            try
-            {
-                if (entry.Entity is not IValidatable validatableEntity)
-                {
-                    continue; // Skip entities that do not implement IValidatable
-                }
-
-                await validatableEntity.ValidateAsync(cancellationToken);
-            }
-            catch (ValidationException ex)
-            {
-                validationErrors.Add(ex);
-            }
-        }
-
-        if (validationErrors.Count > 0)
-        {
-            validationResult = new ValidationResult("One or more entities failed validation", validationErrors.Select(e => e.ValidationResult.MemberNames).SelectMany(m => m));
-        }
-
-        return validationResult;
-    }
-
-    /// <summary>
-    /// Synchronously validates all entities in the context that implement IValidatable.
-    /// This method checks for validation errors and returns a ValidationResult if any entity fails validation.
-    /// </summary>
-    /// <returns>A ValidationResult if any entity fails validation; otherwise, null.</returns>
-    /// <exception cref="ValidationException">Thrown if validation fails for any entity.</exception>
-    public ValidationResult? Validate()
-    {
-        return ValidateAsync().GetAwaiter().GetResult();
     }
 }
