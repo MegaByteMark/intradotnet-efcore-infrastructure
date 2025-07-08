@@ -9,7 +9,7 @@ namespace IntraDotNet.EntityFrameworkCore.Infrastructure.Interfaces;
 /// Manages transactions and coordinates changes across multiple repositories.
 /// </summary>
 /// <typeparam name="TDbContext">The type of the database context.</typeparam>
-public interface IUnitOfWork<TDbContext> : IDisposable, IAsyncDisposable, IValidatable
+public interface IUnitOfWork<TDbContext> : IDisposable, IAsyncDisposable
     where TDbContext : DbContext
 {
     /// <summary>
