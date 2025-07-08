@@ -2,20 +2,20 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <RootNamespace>IntraDotNet.EntityFrameworkCore.Infrastructure</RootNamespace>
+    <RootNamespace>IntraDotNet.EFCore.Infrastructure</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>IntraDotNet.EntityFrameworkCore.Infrastructure</PackageId>
+    <PackageId>IntraDotNet.EFCore.Infrastructure</PackageId>
     <Version>1.0.0</Version>
     <Authors>MegaByteMark</Authors>
     <Description>Optimization classes to remove boilerplate when generating entityframework dbcontexts</Description>
     <PackageTags>EntityFrameworkCore;EFCore;Utilities;Helpers;ORM;DataAccess;Database;DotNet;CSharp</PackageTags>
-    <RepositoryUrl>https://github.com/MegaByteMark/intradotnet-entityframeworkcore.infrastructure</RepositoryUrl>
+    <RepositoryUrl>https://github.com/MegaByteMark/intradotnet-efcore-infrastructure</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/MegaByteMark/intradotnet-entityframeworkcore.infrastructure</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/MegaByteMark/intradotnet-efcore-infrastructure</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="IntraDotNet.Infrastructure.Core" Version="1.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.1">
