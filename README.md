@@ -19,7 +19,7 @@ A comprehensive .NET library that eliminates boilerplate code when working with 
 
 - .NET 9.0 SDK or later
 - Entity Framework Core 9.0 or later
-- IntraDotNet.Infrastructure.Core (>=1.0.0)
+- IntraDotNet.Domain.Core (>=1.0.0)
 
 ### Installation
 
@@ -34,7 +34,7 @@ dotnet add package IntraDotNet.EFCore.Infrastructure
 ### 1. Create Your Entity
 
 ```csharp
-using IntraDotNet.Insfrastructure.Core;
+using IntraDotNet.Domain.Core;
 
 public class Product : IAuditable, IRowVersion
 {
@@ -63,12 +63,12 @@ public class MyDbContext : DbContext
     {
         // Configure auditing, soft delete, and optimistic concurrency
         modelBuilder.UseAuditable<Product>();
-        modelBuilder.UseOptimisticConcurrency<Product>();
-        
         // Or configure individually:
         // modelBuilder.UseCreateAudit<Product>();
         // modelBuilder.UseUpdateAudit<Product>();
         // modelBuilder.UseSoftDelete<Product>();
+
+        modelBuilder.UseOptimisticConcurrency<Product>();
         
         base.OnModelCreating(modelBuilder);
     }
@@ -126,8 +126,8 @@ await repository.DeleteAsync(1);
 ### 5. Using with Services
 
 ```csharp
-using IntraDotNet.Services;
-using IntraDotNet.Results;
+using IntraDotNet.Application.Services;
+using IntraDotNet.Application.Results;
 
 public class ProductService : BaseValidatableService<Product>
 {

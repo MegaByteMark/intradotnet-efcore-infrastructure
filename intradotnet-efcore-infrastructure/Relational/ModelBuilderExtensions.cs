@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using IntraDotNet.EntityFrameworkCore.Infrastructure.ValueGenerators;
-using IntraDotNet.Infrastructure.Core;
+using IntraDotNet.Domain.Core;
 
 namespace IntraDotNet.EntityFrameworkCore.Infrastructure.Relational;
 
